@@ -41,7 +41,7 @@ Why is Proxy/Decorator different
 
 ## Behavioral
 - [Strategy](behavioural/strategy-design-pattern.md)
-- [Singleton](behavioural/singleton.md)
+- [Singleton](behavioural/singleton/index.md)
 - [Command](behavioural/command.md)
 - [Bridge](behavioural/bridge.md)
 - [Null](behavioural/null.md)

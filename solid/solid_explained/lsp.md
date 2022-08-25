@@ -1,15 +1,3 @@
-## The Liskov Substitution Principle
-
-The principle:
->If objects of type T are replaces with objects of type S, when S is a subtype of T, in a program, the programs characteristics should not change
-
-For example, if you have a type `Polygon4` which is polygons with four sides, and `Square` and `Rectangle` were subtypes. Then anywhere you have an object of type `Polygon4` you should be able to replace it with a object of type `Square` or type `Rectangle` and everything should still work.
-
-Although this may seem intuitive, there are some languages that allow a subtype to modify its supertype behaviour, which is not what we want. This principle is a warning about avoiding this pitfall.
-
-
--------
-
 # Liskov Substitution Principle
 
 Original Defintion:
@@ -19,7 +7,9 @@ Original Defintion:
 Alternative definition:
 > Subtypes must be substitutable for their base types
 
-# Basics of OO Design
+Although this may seem intuitive, there are some languages that allow a subtype to modify its supertype behaviour, which is not what we want. This principle is a warning about avoiding this pitfall.
+
+## Basics of OO Design
 There's two types of relationships we need to consider here.
 - Inheritance - when something IS-A something else
   - e.g. a square is a rectangle
@@ -29,7 +19,7 @@ There's two types of relationships we need to consider here.
 The LSP states that
 > The IS-A relationship is insufficient and should be replaced with IS-SUBSTITUTABLE-FOR
 
-## Example - Rectangle-Square Problem
+### Example - Rectangle-Square Problem
 - A rectangle has hour sides and four right angles
 - A square has four equal sides and four right angles
 - Per geometry, a square *is a* rectangle
@@ -85,7 +75,7 @@ public class Square : Rectangle
 Since a square is a rectange, `Square` inherits from `Rectange`.
 And since, we require the length and width the same, in the setter we set the width and height equal to each other.
 
-### The problem
+#### The problem
 The problem is when we have code that is expecting a rectangle but actually gets a square.
 Take for example
 
@@ -98,7 +88,7 @@ Assert.Equal(20, AreaCalculator.CalculateArea(myRect))
 ```
 We can clearly see this is the wrong result, since we should have got 20 instead.
 
-### What happened?
+#### What happened?
 We know that
 - Square has an invariant, it's sides must be equal
   
@@ -108,7 +98,7 @@ However, we also know that
 This design breaks rectangle's invariant.
 Hence, here we can't substitute a subtype for it's base type. This this violate LSP.
 
-## Possible solutions
+### Possible solutions
 We could get rid of square and simply add a flag to rectangle as such:
 
 ```cs
@@ -140,10 +130,10 @@ public class Square
 }
 ```
 
-### Detecting LSP violations IRL:
-#### 1. type checking with `is` or `as` in polymorphic code (which means that code should work with any type or subtype)
+## Detecting LSP violations IRL:
+### 1. type checking with `is` or `as` in polymorphic code (which means that code should work with any type or subtype)
 
-##### Example
+#### Example
 ```cs
 foreach (var user in users)
 {
@@ -158,7 +148,7 @@ foreach (var user in users)
 This is a problem because now every time you work some users you'll have to check if it's an `Admin` or not.
 If you add more subtypes for example `RestrictedUser` then you'll have to change all the if statements to check for that type too. This obviously violates the OCP because you'd have to modify the code when you wanted to extend it.
 
-### Solution
+#### Solution
 To solve this we need to make sure that each of our subtypes is substitutable for the base type.
 
 One solution, would be to have each subtype implement it's own custom functionality for `Print()` so then we'd just have
@@ -182,7 +172,7 @@ foreach (var user in users)
 Although this might look like moving the problem, doing this means that the `foreach` loop no longer violates LSP.
 It would also mean we could have all the time checks in one place instead of everywhere the `Helper` method is used.
 
-##### 2. null checks
+### 2. null checks
 Another way to detect potential violations are null checks, which are essentially the same as checking the type.
 
 ```cs
@@ -200,7 +190,7 @@ This is a LSP violation because in C# nulls, in general, are not substitutable f
 
 One way of avoiding checking for nulls is using the [null object pattern](../../design_patterns/behavioural/null.md).
 
-##### 3. NotImplementedException
+### 3. NotImplementedException
 Indication that only some features of an interface or a base class were implemented. This type cannot be substituted for the interface or base class and hence violated LSP
 
 For example, say you have an interface for a logging service
@@ -245,7 +235,7 @@ And that if there's code that violates LSP it also violates polymorphism.
 More importantly, anywhere you have polymorphism, you almost definitely will want things to be substitutable.
 
 
-# Fixing LSP Violations
+## Fixing LSP Violations
 
 1. Follow the "Tell, Don't Ask" principle
    Instead of asking instances for their type and then conditionally performing different actions.
@@ -291,7 +281,7 @@ foreach (var user in users)
 where instead each user would implement it's own version of print. This way we can just iterate over the users and not have to worry about different implementations for different types of users.
 This gives us a more modular and cohesive design.
 
-## Key takeawuas
+## Key takeaways
 - Need to ensure that subtypes are substituable for their base types
 - Ensure base type invariants are enforce for subtypes
 - To find LSP violations look for:

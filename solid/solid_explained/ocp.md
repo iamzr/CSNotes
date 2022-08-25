@@ -1,18 +1,29 @@
-## Open/Closed Principle
+# Open/Closed Principle
 
-The principle:
->Entities should be open for extension but closed for modifiction"
+> [Entities](../../dictionary.md#entity) should be open for extension but closed for modifiction
 
-Aside: entities
+You should be able to add functionality to your code without having to edit or rewrite your source code.
+Your code should be build such that, if there is a new requirement you simply need to add code to build on top of what's already there.
 
-Entities allow us to define an instance of an object which has a unique state and a common behaviour shared by all other object instances?
+## What "open to extension means"?
+New behaviour can be added in the future
+If an application is closed to extension, it means that it has *fixed* behaviour - it cannot be changed
 
-Say you have some code that completes a task.
-You then have some new requirements.
-Using the OCP it should be possible to make changes to the behavior of that code without needing to edit it's source code.
-If you're wondering how this work 
+## What does "closed to modication" mean?
+Changes to source code are not required.
+The only way to change the behavior of the code is 
 
-### Example 
+Code that is closed to extension, means that the only way that new behavior can be implemented is by changing the code itself - hence if code is "closed to extension" it is not "closed to modication".
+
+## Why should code be closed to modification.
+- If you dont change the code you're less likely to introduce bugs
+- Not needing to change code means you don't have to redeploy it which saves on any downtime
+- Reduces the risk of breaking dependent code
+- Few conditionals in code that is open to extension which results in simplier code
+
+Note: applying bug fixes to your code is okay. It's okay to apply bug fixes directly to the code, if there's not a better place to apply it. 
+
+## Example 
 
 ```mermaid
     classDiagram
@@ -45,33 +56,6 @@ So how do we fix this? Here's a redesign that doesn't violate the principle.
 ```
 
 Here we can see that our system is now "closed" for modifications and "open" for extensions. Because if we add another appliance now, say a `WashingMachine` class. We don't have to change our interface or our `ApplianceOnOff` class - whereas before we would have had to make changes to the `Appliance` class in order to add a new appliance. Hence, our system was "open" for extension i.e adding a new appliance, but it was "closed" for modification i.e. we didn't need to modify our code in order to add this new appliance.
-
--------------------------------
-
-## Open closed principle
-
-> Entities should be open for extension but closed for modifiction
-
-You should be able to add functionality to your code without having to edit or rewrite your source code.
-Your code should be build such that, if there is a new requirement you simply need to add code to build on top of what's already there.
-
-### What "open to extension means"?
-New behaviour can be added in the future
-If an application is closed to extension, it means that it has *fixed* behaviour - it cannot be changed
-
-### What does "closed to modication" mean?
-Changes to source code are not required.
-The only way to change the behavior of the code is 
-
-Code that is closed to extension, means that the only way that new behavior can be implemented is by changing the code itself - hence if code is "closed to extension" it is not "closed to modication".
-
-### Why should code be closed to modification.
-- If you dont change the code you're less likely to introduce bugs
-- Not needing to change code means you don't have to redeploy it which saves on any downtime
-- Reduces the risk of breaking dependent code
-- Few conditionals in code that is open to extension which results in simplier code
-
-Note: applying bug fixes to your code is okay. It's okay to apply bug fixes directly to the code, if there's not a better place to apply it. 
 
 ## Balance of Abrastration and Concreteness
 
@@ -158,7 +142,7 @@ public class DoesOnlyOneThing
 
 We can apply the OCP in using the different ways above:
 
-Parameter-based extension
+### Parameter-based extension
 ```cs
 public class DoesOnlyOneThing
 {
@@ -170,7 +154,7 @@ public class DoesOnlyOneThing
 
 ```
 
-Inheritance-based extension 
+### Inheritance-based extension 
 ```cs
 public class DoesOnlyOneThing
 {
@@ -195,7 +179,7 @@ Here we see that we have extensions the `DoesOnlyOneThing` class using inheritan
 This is possible because we have set `DoIt` as a virtual method, which means it can be overriden.
 And then in the subclass `DoesSomethingElse` we have overriden that method using the `override` keyword.
 
-Finally, the composition-based extension
+### Composition-based extension
 
 ```cs
 public class DoOnlyOneThing
@@ -220,7 +204,7 @@ We could have simply have instantiated the service in the constructor i.e. somet
 But doing this would have then tied the `DoOnlyOneThing` class to a specific implementation of `IPrintService`.
 This way you can have whatever implementation of `IPrintService` you like and simply pass it in.
 
-# Working with Legacy Code
+## Working with Legacy Code
 When working with legacy code it's better to create new classes, instead of adding to the existing legacy code which simply increases complexity.
 
 The reasons for this?
