@@ -22,7 +22,7 @@ A command object contains all the data to process the request now or at later ti
 
 ## Example
 
-Considerthe following IRL example
+Consider the following IRL example
 
 ```mermaid
 graph LR
@@ -204,3 +204,156 @@ We have a constructor that take in interfaces for our `ShoppingBasketRepository`
 This means we aren't tied down to any concrete implementations, except for product which is oly a simple model.
 This means we can easily use different implementations for say our shopping basket repository and this code shouldn't be affected.
 Also, doing this is helpful when testing, because we can easily use mocks of the repositories when creating a command to test.
+
+Before we can refactor our application to use the command design pattern,
+we also need to create another command for adding and removing items to the basket.
+
+```cs
+// ShoppingBasket.Business.Commands.ChangeQuantityCommand
+
+public class ChangeQuantityCommand : ICommand
+{
+    public enum Operation
+    {
+        Increase,
+        Decrease
+    }
+
+    private readonly Operation _operation;
+    private readonly IShoppingBasketRepository _shoppingBasketRepository;
+    private readonly IProductRepository _productRepository;
+    private readonly Product _product;
+
+    public ChangeQuantityCommand(
+        Operation operation,
+        IShoppingBasketRepository shoppingBasketRepository,
+        IProductRepository productRepository,
+        Product _product,
+    )
+    {
+        _operation = operation;
+        _shoppingBasketRepository = shoppingBasketRepository;
+        _productRepository = productRepository;
+        _product = product;
+    }
+
+    public void Execute()
+    {
+        switch (_operation)
+        {
+            case Operation.Decrease:
+                _productRepository.IncreaseStockBy(_product.ItemId, 1);
+                _shoppingBasketRepository.DecreaseQuantity(product.ItemId);
+                break
+            case Operation.Increase:
+                _productRepository.DecreaseStockBy(_product.ItemId, 1);
+                _shoppingBasketRepository.IncreaseQuantity(product.ItemId);
+                break
+        }
+    }
+
+    public void CanExecute()
+    {
+        switch (_operation)
+        {
+            case Operation.Decrease:
+                return _shoppingBasketRepository.Get(product.ItemId).Quantity ! = 0;
+            case Operation.Increase:
+                return (_shoppingBasketRepository.GetStockFor(proudct.ItemId) - 1) >= 0;
+        }
+    }
+
+    public void Undo()
+    {
+        switch (_operation)
+        {
+            case Operation.Decrease:
+                _productRepository.DecreaseStockBy(_product.ItemId, 1);
+                _shoppingBasketRepository.IncreaseQuantity(product.ItemId);
+                break
+            case Operation.Increase:
+                _productRepository.IncreaseStockBy(_product.ItemId, 1);
+                _shoppingBasketRepository.DecreaseQuantity(product.ItemId);
+                break
+        }
+    }
+}
+```
+
+We now have all the commands we need in order to refactor our application,
+with the aim of getting rid of the parts that are acting with the shopping cart directly.
+
+We will now use our command manager and concrete commands as follows.
+
+We want to replace the line that add the product to the basket repository
+and the 5 lines that add the item to the basket.
+
+To do this we create instances of out commands and then replace the lines
+
+```cs
+// ShoppingBasket.Program
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var shoppingBasketRepository = new ShoppingBasketRepository;
+        var productsRepository = new ProductsRepository;
+
+        var product = productsRepository.FindBy("bwb43hf");
+
+        var addToBasketCommand = new AddToBasketCommand(
+            shoppingBasketRepository,
+            productsRepository,
+            product
+        );
+
+        var increaseQuantityCommand = new ChangeQuantityCommand(
+            ChangeQuantityCommand.Operation.Increase,
+            shoppingBasketRepositorym
+            productsRepository,
+            product
+        );
+
+        var manager = new CommandManager();
+
+        manager.Invoke(addToCartCommand);
+        manager.Invoke(increaseQuantityCommand);
+        manager.Invoke(increaseQuantityCommand);
+        manager.Invoke(increaseQuantityCommand);
+        manager.Invoke(increaseQuantityCommand);
+        manager.Invoke(increaseQuantityCommand);
+
+        PrintBasket(shoppingBasketRepository);
+    }
+    
+    static void PrintBasket(ShoppingBasketRepository shoppingBasketRepository)
+    {
+        // Code to print items in basket
+    }
+}
+```
+
+The above shows the conversion from using the `shoppingBasketRepository` directly into using the commands with the `CommandManager`.
+
+What's interesting is that now our application doesn't actually have to know how to interact with the datastore. 
+It's up to the command to communiate with the reciever.
+
+This demonstrates the command design pattern. 
+It adds a little more complexity which might nore always be desired, as well as another layer to keep track of in our application.
+
+Summary:
+
+The command pattern consists of
+    - a command
+    - the reciever
+    - invoker
+    - client
+A command contains all the information it neesd to execute now or at a later time
+
+Using the command design pattern hwe have an additional layer in our application whihc allows us to process certain data and instructions, this makes the application more robust as well as more testable.
+
+Allows for seperation of concerns - our application is seperate from our repositories and data layers
+
+One of the drawbacks of this pattern is that it may add unnecessesary complexity.
+
