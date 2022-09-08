@@ -1,6 +1,6 @@
 # Delegation
 
- In .Net functions are passed around using something called Delegation.
+In .Net functions are passed around using something called Delegation.
 
 Delegation is what truely enables us to functional programming in .Net
 
