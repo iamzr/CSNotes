@@ -266,3 +266,52 @@ It's strongly recommdended you use constructure dependency injection wherever yo
 If you're using ASP.NET core it has a built-in services collection as its container.
 You can use it directly or use a different third-party solution if you like.
 
+## Example
+
+COnsider we have the following class
+
+```cs
+public class CalculationEngine
+{
+    public ICalculationContext { get; set; } = new DefaultCalculationContext();
+    
+    public decimal Solution { get; set; }
+
+    public CalculationEngine()
+    {
+        Context.Engine = this;
+    }
+
+    public void Calculate()
+    {
+        Context.Log("Starting calculation");
+
+        Context.Log("Loading problem");
+
+        string problemJson = Context.LoadPolicyFromFile();
+
+        var string = Context.GetProblemFromJsonString(problemJson);
+
+        var solution = Context.CalculateSolutionForProblem(problem, Context);
+
+        solution.Calculate(problem);
+
+        // More code
+
+    }
+}
+```
+
+As you can see from the above code there is a strong dependency between `CalculationEngine` and `ICalculationEngine` along with it's concrete implementation of `DefaultCalculationContext`.
+
+In order to start refactoring this code we need to
+
+<!-- TODO: Find a good example of impleemnting DIP -->
+
+# Key takeaways:
+
+- Most classes should depend on abstractions, not implementation details
+- Abstractions shouldn't leak details, the shouldn't care about how they're implemented.
+- Classes should be explicit about their dependendencies
+- Clients should inject dependencies when they create other classes
+- Structure your solution to leverage dependency inversion 
