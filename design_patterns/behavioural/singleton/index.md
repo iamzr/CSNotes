@@ -1,6 +1,6 @@
 # Design Patterns: Singleton
 
-A singleton is a class designed to only ever have on instance.
+A singleton is a class designed to only ever have one instance.
 The class itself is responsible to ensuring this requirement.
 
 Examples:

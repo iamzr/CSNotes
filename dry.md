@@ -1,0 +1,1 @@
+The DRY principle

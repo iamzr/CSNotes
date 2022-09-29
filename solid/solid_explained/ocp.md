@@ -120,7 +120,7 @@ Since to be able to use this funcitonality, your code is expected to inherit fro
 ## How do you predict future changes?
 
 Easy start off concrete.
-Then as time goes by and if you are required to make a modiciation, simply apply it directly.
+Then as time goes by and if you are required to make a modification, simply apply it directly.
 However, if you're having to make more than one or two changes, and it's possible that further modifications might be possible.
 Then it's time to consider making it open to extension, for that direction of changes.
 

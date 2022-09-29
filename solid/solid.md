@@ -107,3 +107,5 @@ isp <-- Details depend on interfaces --> dip
 ocp <-- Change behaviour by passing different dependencies --> dip
 isp <-- Interfaes must be fully  implemented --> lsp
 ```
+
+<!-- TODO: Need to finish diagram-->

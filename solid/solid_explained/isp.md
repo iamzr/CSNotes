@@ -1,7 +1,7 @@
 ## The Interface Segregation Principle
 
 The principle:
-> An object should only depend on interfaces ir requires and should not be enforced to implement any method (or property) it does't require.
+> An object should only depend on interfaces it requires and should not be enforced to implement any method (or property) it does't require.
 
 Take the following example:
 We have the following interface `INumberOperations` which defines operations on complex numbers.
