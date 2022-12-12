@@ -47,6 +47,7 @@ Why is Proxy/Decorator different
 - [Null](behavioural/null.md)
 
 ## Creational
+- [Builder](creational/builder.md)
 
 ## Structural
 - [Facade](structural/facade.md)

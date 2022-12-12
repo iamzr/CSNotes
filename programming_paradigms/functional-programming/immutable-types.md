@@ -1,4 +1,4 @@
-## Immutable types
+# Immutable types
 
 The easiest way to tame side effects in C# is to force immutatibility with custom types.
 
@@ -8,7 +8,7 @@ Languages like F# enforce immutability by default; but we have to do a bit of wo
 
 ### Example
 
-Take for example the folllowing code:
+Take for example the following code:
 
 ```cs
 public class PriceRange
